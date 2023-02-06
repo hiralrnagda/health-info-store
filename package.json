@@ -1,0 +1,26 @@
+{
+  "name": "info7255",
+  "version": "1.0.0",
+  "description": "INFO 7255 - Advanced Big Data Indexing Applications",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/hiralrnagda/INFO-7255-Advance-Big-Data-App-Indexing.git"
+  },
+  "author": "Hiral Rajesh Nagda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hiralrnagda/INFO-7255-Advance-Big-Data-App-Indexing/issues"
+  },
+  "homepage": "https://github.com/hiralrnagda/INFO-7255-Advance-Big-Data-App-Indexing#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "jsonschema": "^1.4.1",
+    "object-hash": "^3.0.0",
+    "redis": "^4.6.4"
+  }
+}
