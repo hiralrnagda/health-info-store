@@ -13,3 +13,4 @@ https://softwarekeep.com/help-center/fix-the-wslregisterdistribution-failed-erro
 
 sudo apt-get install redis
 sudo service redis-server start
+sudo service redis-server stop
