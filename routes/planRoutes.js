@@ -1,46 +1,27 @@
 const express = require("express");
 const router = express.Router();
-/* defining JSON schema for plans */
-var Validator = require("jsonschema").Validator;
-var validator = new Validator();
-const schema = {
-  type: "object",
-  properties: {
-    objectID: { type: "string" },
-    name: { type: "string" },
-    cost: { type: "integer" },
-    deductible: { type: "integer" },
-    "co-pay": { type: "integer" },
-  },
-  required: ["objectID", "name", "cost"],
-  additionalProperties: false,
-};
+const schema = require("../schemaValidator");
+const db = require("../db");
 
-const hash = require("object-hash");
-const client = require("../db");
-
+//create a new plan
 router.post("/", async (req, res) => {
   console.log("POST: /plans");
   console.log(req.body);
-  // req.body = JSON.parse(req.body);
-  const isValid = validator.validate(req.body, schema);
-  if (isValid.errors.length < 1) {
-    req.body = isValid.instance;
-    const value = await client.hGetAll(req.body.objectID);
-    if (value.objectID == req.body.objectID) {
-      res.status(409).json({ message: "item already exists" });
+
+  if (schema.validator(req.body)) {
+    const value = await db.findEntry(req.body.objectId);
+    if (value) {
+      res
+        .setHeader("ETag", value.ETag)
+        .status(409)
+        .json({ message: "item already exists" });
       console.log("item already exists");
       return;
     } else {
-      const etag = hash(req.body);
-      console.log(etag);
-      for (const item in req.body) {
-        await client.hSet(req.body.objectID, item, req.body[item]);
-      }
-      await client.hSet(req.body.objectID, "etag", etag);
-      res.status(201).json({
+      const ETag = (await db.addPlanFromReq(req.body)).ETag;
+      res.setHeader("ETag", ETag).status(201).json({
         message: "item added",
-        etag: etag,
+        ETag: ETag,
       });
       console.log("item added");
       return;
@@ -52,9 +33,11 @@ router.post("/", async (req, res) => {
   }
 });
 
+//get with planId
 router.get("/:planId", async (req, res) => {
   console.log("GET: plans/");
   console.log(req.params);
+  console.log(req.headers["if-none-match"]);
   if (
     req.params.planId == null &&
     req.params.planId == "" &&
@@ -64,18 +47,39 @@ router.get("/:planId", async (req, res) => {
     console.log("invalid plan ID");
     return;
   }
-  const value = await client.hGetAll(req.params.planId);
-  if (value.objectID == req.params.planId) {
-    res.status(200).json(value);
-    console.log("plan found:");
-    console.log(value);
-    return;
+  const value = await db.findEntry(req.params.planId);
+  if (value.objectId == req.params.planId) {
+    if (
+      req.headers["if-none-match"] &&
+      value.ETag == req.headers["if-none-match"]
+    ) {
+      res
+        .setHeader("ETag", value.ETag)
+        .status(304)
+        .json({
+          message: "plan unchanged",
+          plan: JSON.parse(value.plan),
+        });
+      console.log("plan found unchanged:");
+      console.log(JSON.parse(value.plan));
+      return;
+    } else {
+      res
+        .setHeader("ETag", value.ETag)
+        .status(200)
+        .json(JSON.parse(value.plan));
+      console.log("plan found changed:");
+      console.log(JSON.parse(value.plan));
+      return;
+    }
   } else {
     res.status(404).json({ message: "plan not found" });
     console.log("plan not found");
     return;
   }
 });
+
+//get without planId
 router.get("/", async (req, res) => {
   console.log("GET: /plans. Invalid request");
   res.status(400).json({ message: "invalid plan ID" });
@@ -83,6 +87,7 @@ router.get("/", async (req, res) => {
   return;
 });
 
+//delete with planId
 router.delete("/:planId", async (req, res) => {
   console.log("DELETE: /plans");
   console.log(req.params);
@@ -94,14 +99,13 @@ router.delete("/:planId", async (req, res) => {
     res.status(400).json({ message: "invalid plan ID" });
     return;
   }
-  const value = await client.hGetAll(req.params.planId);
-  if (value.objectID == req.params.planId) {
+  const value = await db.findEntry(req.params.planId);
+  if (value.objectId == req.params.planId) {
     console.log("item found");
-    console.log(value);
-    const delResult = await client.del(req.params.planId);
-    if (delResult) {
+    console.log(JSON.parse(value.plan));
+    if (db.deletePlan(req.params)) {
       console.log("item deleted");
-      res.status(200).json(value);
+      res.status(200).json(JSON.parse(value.plan));
     } else {
       console.log("item not deleted");
       res.status(500).json({ message: "item not deleted" });
