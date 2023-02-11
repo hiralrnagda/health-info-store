@@ -105,7 +105,7 @@ router.delete("/:planId", async (req, res) => {
     console.log(JSON.parse(value.plan));
     if (db.deletePlan(req.params)) {
       console.log("item deleted");
-      res.status(200).json(JSON.parse(value.plan));
+      res.status(200).json();
     } else {
       console.log("item not deleted");
       res.status(500).json({ message: "item not deleted" });
