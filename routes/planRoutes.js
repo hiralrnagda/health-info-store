@@ -103,7 +103,6 @@ router.patch("/:planId", async (req, res) => {
     console.log("invalid plan ID");
     return;
   }
-  const ETag = hash(req.body);
   const value = await db.findEntry(req.params.planId);
   if (value.objectId == req.params.planId) {
     if (req.headers["if-match"] || value.ETag == req.headers["if-match"]) {
@@ -115,9 +114,12 @@ router.patch("/:planId", async (req, res) => {
       console.log(JSON.parse(value.plan));
       return;
     } else {
-      await client.hSet(req.body.objectId, "plan", JSON.stringify(req.body));
-      await client.hSet(req.body.objectId, "ETag", ETag);
-      res.setHeader("ETag", ETag).status(201).json(JSON.parse(value.plan));
+      const patchResult = await db.addPlanFromReq(req.body);
+      console.log(patchResult);
+      res
+        .setHeader("ETag", patchResult.ETag)
+        .status(201)
+        .json(JSON.parse(patchResult.plan));
     }
   } else {
     res.status(404).json({ message: "plan not found" });
