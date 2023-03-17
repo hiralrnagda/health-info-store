@@ -12,6 +12,7 @@ app.use(express.json({ limit: "30mb", extended: true }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 app.use("/plans", require("./routes/planRoutes"));
+app.use("/auth", require("./routes/authRoutes"));
 
 app.listen(port_no, () => {
   console.log("Application starting on port ", port_no);

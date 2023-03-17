@@ -2,12 +2,16 @@ const express = require("express");
 const router = express.Router();
 const schema = require("../schemaValidator");
 const db = require("../db");
+const auth = require("../auth");
 
 //create a new plan
 router.post("/", async (req, res) => {
   console.log("POST: /plans");
   console.log(req.body);
-
+  if (!auth.validateToken(req)) {
+    res.status(400).json({ message: "wrong bearer token/format" });
+    return;
+  }
   if (schema.validator(req.body)) {
     const value = await db.findEntry(req.body.objectId);
     if (value) {
@@ -38,6 +42,10 @@ router.get("/:planId", async (req, res) => {
   console.log("GET: plans/");
   console.log(req.params);
   console.log(req.headers["if-none-match"]);
+  if (!auth.validateToken(req)) {
+    res.status(400).json({ message: "wrong bearer token/format" });
+    return;
+  }
   if (
     req.params.planId == null &&
     req.params.planId == "" &&
@@ -79,18 +87,53 @@ router.get("/:planId", async (req, res) => {
   }
 });
 
-//get without planId
-router.get("/", async (req, res) => {
-  console.log("GET: /plans. Invalid request");
-  res.status(400).json({ message: "invalid plan ID" });
-  console.log("invalid plan ID");
-  return;
+router.patch("/:planId", async (req, res) => {
+  console.log("PATCH: plans/");
+  console.log(req.params);
+  if (!auth.validateToken(req)) {
+    res.status(400).json({ message: "wrong bearer token/format" });
+    return;
+  }
+  if (
+    req.params.planId == null &&
+    req.params.planId == "" &&
+    req.params == {}
+  ) {
+    res.status(400).json({ message: "invalid plan ID" });
+    console.log("invalid plan ID");
+    return;
+  }
+  const ETag = hash(req.body);
+  const value = await db.findEntry(req.params.planId);
+  if (value.objectId == req.params.planId) {
+    if (req.headers["if-match"] || value.ETag == req.headers["if-match"]) {
+      res
+        .setHeader("ETag", value.ETag)
+        .status(412)
+        .json(JSON.parse(value.plan));
+      console.log("plan found unchanged:");
+      console.log(JSON.parse(value.plan));
+      return;
+    } else {
+      await client.hSet(req.body.objectId, "plan", JSON.stringify(req.body));
+      await client.hSet(req.body.objectId, "ETag", ETag);
+      res.setHeader("ETag", ETag).status(201).json(JSON.parse(value.plan));
+    }
+  } else {
+    res.status(404).json({ message: "plan not found" });
+    console.log("plan not found");
+    return;
+  }
 });
 
 //delete with planId
 router.delete("/:planId", async (req, res) => {
   console.log("DELETE: /plans");
   console.log(req.params);
+  if (!auth.validateToken(req)) {
+    res.status(400).json({ message: "wrong bearer token/format" });
+    return;
+  }
   if (
     req.params.planId == null &&
     req.params.planId == "" &&
@@ -119,6 +162,15 @@ router.delete("/:planId", async (req, res) => {
   }
 });
 
+//get without planId
+router.get("/", async (req, res) => {
+  console.log("GET: /plans. Invalid request");
+  res.status(400).json({ message: "invalid plan ID" });
+  console.log("invalid plan ID");
+  return;
+});
+
+//delete without planId
 router.delete("/", async (req, res) => {
   console.log("DELETE: /plans. Invalid request");
   res.status(400).json({ message: "invalid plan ID" });

@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/hiralrnagda/INFO-7255-Advance-Big-Data-App-Indexing#readme",
   "dependencies": {
+    "basic-auth": "^2.0.1",
     "express": "^4.18.2",
     "jsonschema": "^1.4.1",
+    "jsonwebtoken": "^9.0.0",
     "object-hash": "^3.0.0",
     "redis": "^4.6.4"
   }
