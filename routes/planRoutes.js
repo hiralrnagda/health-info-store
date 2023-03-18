@@ -105,7 +105,7 @@ router.patch("/:planId", async (req, res) => {
   }
   const value = await db.findEntry(req.params.planId);
   if (value.objectId == req.params.planId) {
-    if (req.headers["if-match"] || value.ETag == req.headers["if-match"]) {
+    if (!req.headers["if-match"] || value.ETag != req.headers["if-match"]) {
       res
         .setHeader("ETag", value.ETag)
         .status(412)
