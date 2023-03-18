@@ -7,9 +7,8 @@ const auth = require("../auth");
 //create a new plan
 router.post("/", async (req, res) => {
   console.log("POST: /plans");
-  console.log(req.body);
   if (!auth.validateToken(req)) {
-    res.status(400).json({ message: "wrong bearer token/format" });
+    res.status(401).json({ message: "invalid bearer token/format" });
     return;
   }
   if (schema.validator(req.body)) {
@@ -24,8 +23,8 @@ router.post("/", async (req, res) => {
     } else {
       const ETag = (await db.addPlanFromReq(req.body)).ETag;
       res.setHeader("ETag", ETag).status(201).json({
-        message: "item added",
-        ETag: ETag,
+        message: "item added/created",
+        objectId: value.objectId,
       });
       console.log("item added");
       return;
@@ -40,10 +39,8 @@ router.post("/", async (req, res) => {
 //get with planId
 router.get("/:planId", async (req, res) => {
   console.log("GET: plans/");
-  console.log(req.params);
-  console.log(req.headers["if-none-match"]);
   if (!auth.validateToken(req)) {
-    res.status(400).json({ message: "wrong bearer token/format" });
+    res.status(401).json({ message: "invalid bearer token/format" });
     return;
   }
   if (
@@ -65,19 +62,20 @@ router.get("/:planId", async (req, res) => {
         .setHeader("ETag", value.ETag)
         .status(304)
         .json({
-          message: "plan unchanged",
+          message: "PLAN UNCHANGED!",
           plan: JSON.parse(value.plan),
         });
       console.log("plan found unchanged:");
-      console.log(JSON.parse(value.plan));
       return;
     } else {
       res
         .setHeader("ETag", value.ETag)
         .status(200)
-        .json(JSON.parse(value.plan));
+        .json({
+          message: "PLAN CHANGED!",
+          plan: JSON.parse(value.plan),
+        });
       console.log("plan found changed:");
-      console.log(JSON.parse(value.plan));
       return;
     }
   } else {
@@ -89,9 +87,8 @@ router.get("/:planId", async (req, res) => {
 
 router.patch("/:planId", async (req, res) => {
   console.log("PATCH: plans/");
-  console.log(req.params);
   if (!auth.validateToken(req)) {
-    res.status(400).json({ message: "wrong bearer token/format" });
+    res.status(401).json({ message: "invalid bearer token/format" });
     return;
   }
   if (
@@ -109,17 +106,18 @@ router.patch("/:planId", async (req, res) => {
       res
         .setHeader("ETag", value.ETag)
         .status(412)
-        .json(JSON.parse(value.plan));
+        .json({ message: "plan found unchanged!" });
       console.log("plan found unchanged:");
-      console.log(JSON.parse(value.plan));
       return;
     } else {
       const patchResult = await db.addPlanFromReq(req.body);
-      console.log(patchResult);
       res
         .setHeader("ETag", patchResult.ETag)
         .status(201)
-        .json(JSON.parse(patchResult.plan));
+        .json({
+          message: "plan updated successfully",
+          plan: JSON.parse(patchResult.plan),
+        });
     }
   } else {
     res.status(404).json({ message: "plan not found" });
@@ -131,9 +129,8 @@ router.patch("/:planId", async (req, res) => {
 //delete with planId
 router.delete("/:planId", async (req, res) => {
   console.log("DELETE: /plans");
-  console.log(req.params);
   if (!auth.validateToken(req)) {
-    res.status(400).json({ message: "wrong bearer token/format" });
+    res.status(401).json({ message: "invalid bearer token/format" });
     return;
   }
   if (
@@ -146,17 +143,20 @@ router.delete("/:planId", async (req, res) => {
   }
   const value = await db.findEntry(req.params.planId);
   if (value.objectId == req.params.planId) {
-    console.log("item found");
-    console.log(JSON.parse(value.plan));
-    if (db.deletePlan(req.params)) {
-      console.log("item deleted");
-      res.status(200).json();
+    if (req.headers["if-match"] || value.ETag == req.headers["if-match"]) {
+      console.log("item found");
+      // console.log(JSON.parse(value.plan));
+      if (db.deletePlan(req.params)) {
+        console.log("item deleted");
+        res.status(204).json({ message: "item deleted successfully!" });
+      } else {
+        console.log("item not deleted");
+        res.status(500).json({ message: "item not deleted" });
+      }
+      return;
     } else {
-      console.log("item not deleted");
-      res.status(500).json({ message: "item not deleted" });
+      res.status(404).json({ message: "etag not found!" });
     }
-
-    return;
   } else {
     res.status(404).json({ message: "plan not found" });
     console.log("plan not found");
