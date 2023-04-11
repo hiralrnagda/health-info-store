@@ -4,6 +4,8 @@ const schema = require("../schemaValidator");
 const db = require("../db");
 const auth = require("../auth");
 
+const elastic = require("../elastic");
+
 //create a new plan
 router.post("/", async (req, res) => {
   console.log("POST: /plans");
@@ -22,6 +24,7 @@ router.post("/", async (req, res) => {
       return;
     } else {
       const ETag = (await db.addPlanFromReq(req.body)).ETag;
+      await elastic.enter(req.body, req.body.objectId, null, "plan");
       res.setHeader("ETag", ETag).status(201).json({
         message: "item added/created",
         objectId: value.objectId,
@@ -111,6 +114,8 @@ router.patch("/:planId", async (req, res) => {
       return;
     } else {
       const patchResult = await db.addPlanFromReq(req.body);
+      await elastic.deleteNested(req.params.planId, "plan");
+      await elastic.enter(req.body, req.params.planId, null, "plan");
       res
         .setHeader("ETag", patchResult.ETag)
         .status(201)
@@ -148,6 +153,7 @@ router.delete("/:planId", async (req, res) => {
       // console.log(JSON.parse(value.plan));
       if (db.deletePlan(req.params)) {
         console.log("item deleted");
+        await elastic.deleteNested(req.params.planId, "plan");
         res.status(204).json({ message: "item deleted successfully!" });
       } else {
         console.log("item not deleted");
