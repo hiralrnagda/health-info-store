@@ -19,6 +19,7 @@
   "homepage": "https://github.com/hiralrnagda/INFO-7255-Advance-Big-Data-App-Indexing#readme",
   "dependencies": {
     "@elastic/elasticsearch": "8.7",
+    "amqplib": "^0.10.3",
     "basic-auth": "^2.0.1",
     "express": "^4.18.2",
     "jsonschema": "^1.4.1",

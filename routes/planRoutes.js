@@ -25,6 +25,7 @@ router.post("/", async (req, res) => {
     } else {
       const ETag = (await db.addPlanFromReq(req.body)).ETag;
       await elastic.index(req.body, req.body.objectId, null, "plan");
+      // await producer.publishMessage(req.body, "added to producer");
       res.setHeader("ETag", ETag).status(201).json({
         message: "item added/created",
         objectId: value.objectId,
@@ -65,20 +66,18 @@ router.get("/:planId", async (req, res) => {
         .setHeader("ETag", value.ETag)
         .status(304)
         .json({
-          message: "PLAN UNCHANGED!",
           plan: JSON.parse(value.plan),
         });
-      console.log("plan found unchanged:");
+      // console.log("plan found unchanged:");
       return;
     } else {
       res
         .setHeader("ETag", value.ETag)
         .status(200)
         .json({
-          message: "PLAN CHANGED!",
           plan: JSON.parse(value.plan),
         });
-      console.log("plan found changed:");
+      // console.log("plan found changed:");
       return;
     }
   } else {
@@ -114,13 +113,14 @@ router.patch("/:planId", async (req, res) => {
       res
         .setHeader("ETag", value.ETag)
         .status(412)
-        .json({ message: "plan found unchanged!" });
-      console.log("plan found unchanged:");
+        .json({ message: "etag required to patch!" });
+      console.log("etag required to patch");
       return;
     } else {
       const putResult = await db.addPlanFromReq(req.body);
       await elastic.deleteNested(req.params.planId, "plan");
       await elastic.index(req.body, req.params.planId, null, "plan");
+      // await producer.publishMessage(req.body, "added to producer");
       res
         .setHeader("ETag", putResult.ETag)
         .status(201)
