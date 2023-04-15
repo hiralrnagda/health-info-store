@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../auth");
+const auth = require("../services/authService");
 
 router.get("/getToken", async (req, res) => {
   const token = auth.keygen();
-  // console.log(authe.authenticate(token));
   res.status(200).json({
     message: "SUCCESS!",
     token: token,

@@ -1,0 +1,292 @@
+{
+	"info": {
+		"_postman_id": "2c48241d-3b66-4723-86be-6a4a02270adf",
+		"name": "INFO7255",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14013022"
+	},
+	"item": [
+		{
+			"name": "creating new plan",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYjRhOWE3YjU0ZTY2MGFkNDE4YmVmZWU0ODJmODVlMWU0ZDM0N2Q2Zjc0NTAyNTEyMDc3ZjFjNjllMTMxNGVjOWU2YWRjNzQxNWRjZGMyY2ZkY2Q3OGNjZmVmMWM3YjYwMWI1MGI5OWZiNDA5NGI4N2ZkMGEzNjc2ZTU4ZTA2YWMiLCJpYXQiOjE2ODE1OTU5NDUsImV4cCI6MTY4MTU5OTU0NX0.cOZmuXnrhbiD4K0Hapr7czEdl6ELQYcwYMRo3bQzuDQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"planCostShares\": {\r\n    \"deductible\": 2000,\r\n    \"_org\": \"example.com\",\r\n    \"copay\": 23,\r\n    \"objectId\": \"1234vxc2324sdf-501\",\r\n    \"objectType\": \"membercostshare\"\r\n  },\r\n  \"linkedPlanServices\": [\r\n    {\r\n      \"linkedService\": {\r\n        \"_org\": \"example.com\",\r\n        \"objectId\": \"1234520xvc30asdf-502\",\r\n        \"objectType\": \"service\",\r\n        \"name\": \"Yearly physical\"\r\n      },\r\n      \"planserviceCostShares\": {\r\n        \"deductible\": 10,\r\n        \"_org\": \"example.com\",\r\n        \"copay\": 0,\r\n        \"objectId\": \"1234512xvc1314asdfs-503\",\r\n        \"objectType\": \"membercostshare\"\r\n      },\r\n      \"_org\": \"example.com\",\r\n      \"objectId\": \"27283xvx9asdff-504\",\r\n      \"objectType\": \"planservice\"\r\n    },\r\n    {\r\n      \"linkedService\": {\r\n        \"_org\": \"example.com\",\r\n        \"objectId\": \"1234520xvc30sfs-505\",\r\n        \"objectType\": \"service\",\r\n        \"name\": \"well baby\"\r\n      },\r\n      \"planserviceCostShares\": {\r\n        \"deductible\": 10,\r\n        \"_org\": \"example.com\",\r\n        \"copay\": 175,\r\n        \"objectId\": \"1234512xvc1314sdfsd-506\",\r\n        \"objectType\": \"membercostshare\"\r\n      },\r\n      \"_org\": \"example.com\",\r\n      \"objectId\": \"27283xvx9sdf-507\",\r\n      \"objectType\": \"planservice\"\r\n    }\r\n  ],\r\n  \"_org\": \"example.com\",\r\n  \"objectId\": \"12xvxc345ssdsds-508\",\r\n  \"objectType\": \"plan\",\r\n  \"planType\": \"inNetwork\",\r\n  \"creationDate\": \"12-12-2017\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/plans",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"plans"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "health check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/_health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"_health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get a health plan using id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYjRhOWE3YjU0ZTY2MGFkNDE4YmVmZWU0ODJmODVlMWU0ZDM0N2Q2Zjc0NTAyNTEyMDc3ZjFjNjllMTMxNGVjOWU2YWRjNzQxNWRjZGMyY2ZkY2Q3OGNjZmVmMWM3YjYwMWI1MGI5OWZiNDA5NGI4N2ZkMGEzNjc2ZTU4ZTA2YWMiLCJpYXQiOjE2ODE1OTU5NDUsImV4cCI6MTY4MTU5OTU0NX0.cOZmuXnrhbiD4K0Hapr7czEdl6ELQYcwYMRo3bQzuDQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "If-None-Match",
+						"value": "d337ec26e5728bb60a63833644a8b8218185af6f",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "If-None-Match",
+						"value": "be3ff33c0df48e29fe3be13a46253a28aadfe8d7",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/plans/12xvxc345ssdsds-508",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"plans",
+						"12xvxc345ssdsds-508"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete a health plan using id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiMWE0N2YzOTlkOWJlMGIyMWY3Y2E2ZTdhZDllZjZkZDVhODkyMDJhMGVjNTZmYmI1NDRiMDlkY2UyOTE5YjQyYzY4NDk5Y2JiMmRkMDg5OWJiOTRjMjgwZjYzYTYyODA1YmE5ZjI2ZWQ3YzFmMWQ5MWU0ZjI3MGYzOTNhMjFjMDYiLCJpYXQiOjE2ODE1NzQ1ODQsImV4cCI6MTY4MTU3ODE4NH0.tfxMdrO3uWvEQmgZq_QcYuiJeRkpKZtujQm9m6VahKk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "If-Match",
+						"value": "bde9e94b073ca640e065b18811b1a2cae7d89e00",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/plans/12xvxc345ssdsds-508",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"plans",
+						"12xvxc345ssdsds-508"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post the bearer auth token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiNTBlMjE5Y2EyZmIzYjYyNDdiMmFkOGRkOWE2NzUzYjE3YTZkZTU2ZWZiNmU1ZGI1YjVlZDk1MWEwM2U2NmMwNTQ4ZmZhY2IxOWVmZDk1YWEzNDhiZTkwYjQ1NTYzYWVlOGVmNTY5ZDE3MzYwYjVhNTdmNzU0NTYzZDg5NGZiN2IiLCJpYXQiOjE2NzkxNDk1NDIsImV4cCI6MTY3OTE1MzE0Mn0.GhT6xTc-Ebel3N9aXUk2e1AzRtJHMv2U-r2aWFq0Fmk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/auth/validateToken",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"auth",
+						"validateToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get the bearer token for auth",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/auth/getToken",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"auth",
+						"getToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patch the plan with planId",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYjRhOWE3YjU0ZTY2MGFkNDE4YmVmZWU0ODJmODVlMWU0ZDM0N2Q2Zjc0NTAyNTEyMDc3ZjFjNjllMTMxNGVjOWU2YWRjNzQxNWRjZGMyY2ZkY2Q3OGNjZmVmMWM3YjYwMWI1MGI5OWZiNDA5NGI4N2ZkMGEzNjc2ZTU4ZTA2YWMiLCJpYXQiOjE2ODE1OTU5NDUsImV4cCI6MTY4MTU5OTU0NX0.cOZmuXnrhbiD4K0Hapr7czEdl6ELQYcwYMRo3bQzuDQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "If-Match",
+						"value": "be3ff33c0df48e29fe3be13a46253a28aadfe8d7",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"planCostShares\": {\r\n    \"deductible\": 2000,\r\n    \"_org\": \"example.com\",\r\n    \"copay\": 23,\r\n    \"objectId\": \"1234vxc2324sdf-501\",\r\n    \"objectType\": \"membercostshare\"\r\n  },\r\n  \"linkedPlanServices\": [\r\n    {\r\n      \"linkedService\": {\r\n        \"_org\": \"example.com\",\r\n        \"objectId\": \"1234520xvc30asdf-502\",\r\n        \"objectType\": \"service\",\r\n        \"name\": \"Yearly physical\"\r\n      },\r\n      \"planserviceCostShares\": {\r\n        \"deductible\": 10,\r\n        \"_org\": \"example.com\",\r\n        \"copay\": 0,\r\n        \"objectId\": \"1234512xvc1314asdfs-503\",\r\n        \"objectType\": \"membercostshare\"\r\n      },\r\n      \"_org\": \"example.com\",\r\n      \"objectId\": \"27283xvx9asdff-504\",\r\n      \"objectType\": \"planservice\"\r\n    },\r\n    {\r\n      \"linkedService\": {\r\n        \"_org\": \"example.com\",\r\n        \"objectId\": \"1234520xvc30sfs-505\",\r\n        \"objectType\": \"service\",\r\n        \"name\": \"well baby\"\r\n      },\r\n      \"planserviceCostShares\": {\r\n        \"deductible\": 10,\r\n        \"_org\": \"example.com\",\r\n        \"copay\": 175,\r\n        \"objectId\": \"1234512xvc1314sdfsd-506\",\r\n        \"objectType\": \"membercostshare\"\r\n      },\r\n      \"_org\": \"example.com\",\r\n      \"objectId\": \"27283xvx9sdf-507\",\r\n      \"objectType\": \"planservice\"\r\n    },\r\n    {\r\n      \"linkedService\": {\r\n        \"_org\": \"example.com\",\r\n        \"objectId\": \"1234520xvc30sfs-505xyz\",\r\n        \"objectType\": \"service\",\r\n        \"name\": \"well baby\"\r\n      },\r\n      \"planserviceCostShares\": {\r\n        \"deductible\": 10,\r\n        \"_org\": \"example.com\",\r\n        \"copay\": 175,\r\n        \"objectId\": \"1234512xvc1314sdfsd-506xyz\",\r\n        \"objectType\": \"membercostshare\"\r\n      },\r\n      \"_org\": \"example.com\",\r\n      \"objectId\": \"27283xvx9sdf-507\",\r\n      \"objectType\": \"planservice\"\r\n    }\r\n  ],\r\n  \"_org\": \"example.com\",\r\n  \"objectId\": \"12xvxc345ssdsds-508\",\r\n  \"objectType\": \"plan\",\r\n  \"planType\": \"inNetwork\",\r\n  \"creationDate\": \"12-12-2017\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/plans/12xvxc345ssdsds-508",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"plans",
+						"12xvxc345ssdsds-508"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update the plan with planId",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYjRhOWE3YjU0ZTY2MGFkNDE4YmVmZWU0ODJmODVlMWU0ZDM0N2Q2Zjc0NTAyNTEyMDc3ZjFjNjllMTMxNGVjOWU2YWRjNzQxNWRjZGMyY2ZkY2Q3OGNjZmVmMWM3YjYwMWI1MGI5OWZiNDA5NGI4N2ZkMGEzNjc2ZTU4ZTA2YWMiLCJpYXQiOjE2ODE1OTU5NDUsImV4cCI6MTY4MTU5OTU0NX0.cOZmuXnrhbiD4K0Hapr7czEdl6ELQYcwYMRo3bQzuDQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "If-Match",
+						"value": "d337ec26e5728bb60a63833644a8b8218185af6f",
+						"type": "text"
+					},
+					{
+						"key": "If-Match",
+						"value": "be3ff33c0df48e29fe3be13a46253a28aadfe8d7",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"planCostShares\": {\r\n    \"deductible\": 2000,\r\n    \"_org\": \"example.com\",\r\n    \"copay\": 23,\r\n    \"objectId\": \"1234vxc2324sdf-501\",\r\n    \"objectType\": \"membercostshare\"\r\n  },\r\n  \"linkedPlanServices\": [\r\n    {\r\n      \"linkedService\": {\r\n        \"_org\": \"example.com\",\r\n        \"objectId\": \"1234520xvc30asdf-502\",\r\n        \"objectType\": \"service\",\r\n        \"name\": \"Yearly physical\"\r\n      },\r\n      \"planserviceCostShares\": {\r\n        \"deductible\": 10,\r\n        \"_org\": \"example.com\",\r\n        \"copay\": 0,\r\n        \"objectId\": \"1234512xvc1314asdfs-503\",\r\n        \"objectType\": \"membercostshare\"\r\n      },\r\n      \"_org\": \"example.com\",\r\n      \"objectId\": \"27283xvx9asdff-504\",\r\n      \"objectType\": \"planservice\"\r\n    },\r\n    {\r\n      \"linkedService\": {\r\n        \"_org\": \"example.com\",\r\n        \"objectId\": \"1234520xvc30sfs-505xyzaa\",\r\n        \"objectType\": \"service\",\r\n        \"name\": \"well baby\"\r\n      },\r\n      \"planserviceCostShares\": {\r\n        \"deductible\": 10,\r\n        \"_org\": \"example.com\",\r\n        \"copay\": 175,\r\n        \"objectId\": \"1234512xvc1314sdfsd-506xyzaa\",\r\n        \"objectType\": \"membercostshare\"\r\n      },\r\n      \"_org\": \"example.com\",\r\n      \"objectId\": \"27283xvx9sdf-507xyzaa\",\r\n      \"objectType\": \"planservice\"\r\n    }\r\n  ],\r\n  \"_org\": \"example.com\",\r\n  \"objectId\": \"12xvxc345ssdsds-508\",\r\n  \"objectType\": \"plan\",\r\n  \"planType\": \"inNetwork\",\r\n  \"creationDate\": \"12-12-2017\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/plans/12xvxc345ssdsds-508",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"plans",
+						"12xvxc345ssdsds-508"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

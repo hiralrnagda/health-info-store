@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const schema = require("../schemaValidator");
-const db = require("../db");
-const auth = require("../auth");
-
-const elastic = require("../elastic");
-
+const schema = require("../services/schemaValidatorService");
+const db = require("../services/dbService");
+const auth = require("../services/authService");
+const elastic = require("../services/elasticsearchService");
+const publishMessage = require("../services/rabbitMQService");
 //create a new plan
 router.post("/", async (req, res) => {
   console.log("POST: /plans");
@@ -25,7 +24,11 @@ router.post("/", async (req, res) => {
     } else {
       const ETag = (await db.addPlanFromReq(req.body)).ETag;
       await elastic.index(req.body, req.body.objectId, null, "plan");
-      // await producer.publishMessage(req.body, "added to producer");
+      publishMessage(
+        "my-index",
+        JSON.stringify(req.body),
+        "plan added to queue"
+      );
       res.setHeader("ETag", ETag).status(201).json({
         message: "item added/created",
         objectId: value.objectId,
@@ -77,7 +80,7 @@ router.get("/:planId", async (req, res) => {
         .json({
           plan: JSON.parse(value.plan),
         });
-      // console.log("plan found changed:");
+      publishMessage("my-index", JSON.stringify(req.body), "plan retreived");
       return;
     }
   } else {
@@ -120,7 +123,7 @@ router.patch("/:planId", async (req, res) => {
       const putResult = await db.addPlanFromReq(req.body);
       await elastic.deleteNested(req.params.planId, "plan");
       await elastic.index(req.body, req.params.planId, null, "plan");
-      // await producer.publishMessage(req.body, "added to producer");
+      publishMessage("my-index", JSON.stringify(req.body), "plan patched");
       res
         .setHeader("ETag", putResult.ETag)
         .status(201)
@@ -169,6 +172,7 @@ router.put("/:planId", async (req, res) => {
       const patchResult = await db.addPlanFromReq(req.body);
       await elastic.deleteNested(req.params.planId, "plan");
       await elastic.index(req.body, req.params.planId, null, "plan");
+      publishMessage("my-index", JSON.stringify(req.body), "plan updated");
       res
         .setHeader("ETag", patchResult.ETag)
         .status(201)
@@ -202,11 +206,10 @@ router.delete("/:planId", async (req, res) => {
   const value = await db.findEntry(req.params.planId);
   if (value.objectId == req.params.planId) {
     if (req.headers["if-match"] || value.ETag == req.headers["if-match"]) {
-      console.log("item found");
-      // console.log(JSON.parse(value.plan));
       if (db.deletePlan(req.params)) {
         console.log("item deleted");
         await elastic.deleteNested(req.params.planId, "plan");
+        publishMessage("my-index", JSON.stringify(req.body), "plan deleted");
         res.status(204).json({ message: "item deleted successfully!" });
       } else {
         console.log("item not deleted");

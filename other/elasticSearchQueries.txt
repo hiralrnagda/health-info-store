@@ -1,0 +1,97 @@
+#delete all objects
+DELETE /my-index/
+
+#get all objects
+GET /my-index/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+#get object with object id - 12xvxc345ssdsds-508
+GET /my-index/_search
+{
+  "query" : {
+    "match": {
+      "objectId": "12xvxc345ssdsds-508"
+    }
+  }
+}
+
+GET /my-index/_search
+{
+  "query": {
+    "range": {
+      "copay": {
+        "lt": 30
+      }
+    }
+  }
+}
+
+GET /my-index/_search
+{
+  "query": {
+    "range": {
+      "deductible": {
+        "gte": 90
+      }
+    }
+  }
+}
+
+#Gets aggregate document count of planserviceCostShares
+GET /my-index/_search
+{
+ "size": 0,
+ "aggs": {
+   "popular_services": {
+     "terms": {
+       "field": "linkedPlanServices.planserviceCostShares.objectType"
+     }
+   }
+ }
+}
+
+#Get planCostShares within range  - return 1 successful
+GET /my-index/_search
+{
+"_source": ["linkedPlanServices"],
+ "query": {
+   "range" : {
+     "linkedPlanServices.planserviceCostShares.copay": {
+       "gte": "100",
+       "lte": "200"
+     }
+   }
+ }
+}
+
+#Gets Minimum deductible of planserviceCostShares among all documents
+GET /my-index/_search
+{
+  "size": 0,
+  "aggs": {
+    "theMinDedudctible": {
+      "min": {
+        "field": "linkedPlanServices.planserviceCostShares.deductible"
+      }
+    }
+  }
+}
+
+#Gets Maximum copay of planserviceCostShares from all documents
+GET /my-index/_search
+{
+  "_source": [
+    "linkedPlanServices.planserviceCostShares"
+  ],
+  "aggs": {
+    "MaxCopay": {
+      "max": {
+        "field": "linkedPlanServices.planserviceCostShares.copay"
+      }
+    }
+  }
+}

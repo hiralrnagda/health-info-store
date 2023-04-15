@@ -1,5 +1,5 @@
 const express = require("express");
-const port_no = 3535;
+const port_no = 3001;
 const app = express();
 /* parsing incoming JSON request */
 const bodyParser = require("body-parser"); // parse application/x-www-form-urlencoded
@@ -12,7 +12,7 @@ app.use(express.urlencoded({ limit: "30mb", extended: true }));
 app.use("/plans", require("./routes/planRoutes"));
 app.use("/auth", require("./routes/authRoutes"));
 
-const elastic = require("./elastic");
+const elastic = require("./services/elasticsearchService");
 
 app.get("/", async (req, res) => {
   await elastic.deleteNested("12xvxc345ssdsds-508", "plan");
