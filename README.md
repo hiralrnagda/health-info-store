@@ -16,10 +16,10 @@ https://www.youtube.com/watch?v=BybAetckH88&t=638s
 https://www.youtube.com/watch?v=V9DWKbalbWQ
 RabbitMQ explanation and code implementation - https://dev.to/pharzad/introduction-to-rabbitmq-for-node-js-developers-1clm
 
-Default ports:
-Elasticsearch - http://localhost:9200
-Kibana - http://localhost:5601
-RabbitMQ - http://localhost:15762
+### Default ports:
+1. Elasticsearch - http://localhost:9200
+2. Kibana - http://localhost:5601
+3. RabbitMQ - http://localhost:15762
 ---
 ##### Step 3: Install and run the NodeJS app:
 1. Download/Clone the repository  
