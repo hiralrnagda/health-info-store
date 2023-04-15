@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
       return;
     } else {
       const ETag = (await db.addPlanFromReq(req.body)).ETag;
-      await elastic.enter(req.body, req.body.objectId, null, "plan");
+      await elastic.index(req.body, req.body.objectId, "plan");
       res.setHeader("ETag", ETag).status(201).json({
         message: "item added/created",
         objectId: value.objectId,
@@ -103,6 +103,59 @@ router.patch("/:planId", async (req, res) => {
     console.log("invalid plan ID");
     return;
   }
+  if (!schema.validator(req.body)) {
+    res.status(400).json({ message: "item isn't valid" });
+    console.log("item isn't valid");
+    return;
+  }
+  const value = await db.findEntry(req.params.planId);
+  if (value.objectId == req.params.planId) {
+    if (!req.headers["if-match"] || value.ETag != req.headers["if-match"]) {
+      res
+        .setHeader("ETag", value.ETag)
+        .status(412)
+        .json({ message: "plan found unchanged!" });
+      console.log("plan found unchanged:");
+      return;
+    } else {
+      const putResult = await db.addPlanFromReq(req.body);
+      await elastic.deleteNested(req.params.planId, "plan");
+      await elastic.index(req.body, req.params.planId, "plan");
+      res
+        .setHeader("ETag", putResult.ETag)
+        .status(201)
+        .json({
+          message: "plan patched successfully",
+          plan: JSON.parse(putResult.plan),
+        });
+    }
+  } else {
+    res.status(404).json({ message: "plan not found" });
+    console.log("plan not found");
+    return;
+  }
+});
+
+router.put("/:planId", async (req, res) => {
+  console.log("PUT: plans/");
+  if (!auth.validateToken(req)) {
+    res.status(401).json({ message: "invalid bearer token/format" });
+    return;
+  }
+  if (
+    req.params.planId == null &&
+    req.params.planId == "" &&
+    req.params == {}
+  ) {
+    res.status(400).json({ message: "invalid plan ID" });
+    console.log("invalid plan ID");
+    return;
+  }
+  if (!schema.validator(req.body)) {
+    res.status(400).json({ message: "item isn't valid" });
+    console.log("item isn't valid");
+    return;
+  }
   const value = await db.findEntry(req.params.planId);
   if (value.objectId == req.params.planId) {
     if (!req.headers["if-match"] || value.ETag != req.headers["if-match"]) {
@@ -115,7 +168,7 @@ router.patch("/:planId", async (req, res) => {
     } else {
       const patchResult = await db.addPlanFromReq(req.body);
       await elastic.deleteNested(req.params.planId, "plan");
-      await elastic.enter(req.body, req.params.planId, null, "plan");
+      await elastic.index(req.body, req.params.planId, "plan");
       res
         .setHeader("ETag", patchResult.ETag)
         .status(201)
@@ -168,14 +221,6 @@ router.delete("/:planId", async (req, res) => {
     console.log("plan not found");
     return;
   }
-});
-
-//get without planId
-router.get("/", async (req, res) => {
-  console.log("GET: /plans. Invalid request");
-  res.status(400).json({ message: "invalid plan ID" });
-  console.log("invalid plan ID");
-  return;
 });
 
 //delete without planId
