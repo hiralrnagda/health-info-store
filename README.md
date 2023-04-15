@@ -59,14 +59,20 @@ There are 7 endpoints specified:
 -- in request body is different from plan in db
 ----
 Final Demo screen shots:
+--- Invalid Token
+![invalidToken](https://user-images.githubusercontent.com/48949772/232255734-238eb400-125f-4683-bf1a-57070ddb1d31.jpg)
+----
 --- Redis CLI
-![redis-cli](https://github.com/hiralrnagda/INFO7255/blob/main/screenshots/redis-cli.jpg?raw=true)
+![redis-cli](https://user-images.githubusercontent.com/48949772/232255686-12c0c183-8284-4a79-bf4d-6066d727c1f0.jpg)
 ----
 --- Kibana - while running elastic search queries 
-![kibana1](https://github.com/hiralrnagda/INFO7255/blob/main/screenshots/elasticQueriesOnKibana.jpg?raw=true)
-![kibana2](https://github.com/hiralrnagda/INFO7255/blob/main/screenshots/elasticQueriesOnKibanaAfterPUT.jpg?raw=true)
+![elasticQueriesOnKibana](https://user-images.githubusercontent.com/48949772/232255697-8061e8ab-5592-4d40-8c75-1cfe6ee653fd.jpg)
+----
+![elasticQueriesOnKibanaAfterPUT](https://user-images.githubusercontent.com/48949772/232255708-aed2346a-f171-420b-90c1-e8e8b1e23483.jpg)
 ---
 --- RabbitMQ dashboard
-![rabbitMQ1](https://github.com/hiralrnagda/INFO7255/blob/main/screenshots/rabbitMQ1.jpg?raw=true)
-![rabbitMQ2](https://github.com/hiralrnagda/INFO7255/blob/main/screenshots/rabbitMQ2.jpg?raw=true)
-![rabbitMQ3](https://github.com/hiralrnagda/INFO7255/blob/main/screenshots/rabbitMQ3.jpg?raw=true)
+![rabbitMQ1](https://user-images.githubusercontent.com/48949772/232255759-a9f8e173-33f9-4ba6-b689-c1981bc47926.jpg)
+-----
+![rabbitMQ2](https://user-images.githubusercontent.com/48949772/232255749-29025d68-f098-4df9-ab6e-fef055d78437.jpg)
+-----
+![rabbitMQ3](https://user-images.githubusercontent.com/48949772/232255745-ab1ff259-2633-4d25-91c8-c1d215fb41b7.jpg)
