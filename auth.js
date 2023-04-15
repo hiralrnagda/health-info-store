@@ -9,23 +9,16 @@ authorization.keygen = function () {
   return token;
 };
 authorization.authenticate = function (token) {
-  var decoded = jwt.verify(token, privKey);
-  try {
-    var decoded = jwt.verify(token, privKey);
-  } catch (err) {
+  if (jwt.verify(token, privKey)) {
+    return true;
+  } else {
     return false;
   }
-  return true;
 };
 authorization.validateToken = function (req) {
   try {
-    // this.authenticate(req.headers.authorization.split(" ")[1]);
+    this.authenticate(req.headers.authorization.split(" ")[1]);
   } catch (err) {
-    // console.log("wrong bearer token");
-    // res.status(400).json({
-    //     message:"wrong bearer token/format"
-    // });
-    // return;
     return false;
   }
   return true;

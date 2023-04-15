@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
       return;
     } else {
       const ETag = (await db.addPlanFromReq(req.body)).ETag;
-      await elastic.index(req.body, req.body.objectId, "plan");
+      await elastic.index(req.body, req.body.objectId, null, "plan");
       res.setHeader("ETag", ETag).status(201).json({
         message: "item added/created",
         objectId: value.objectId,
@@ -120,7 +120,7 @@ router.patch("/:planId", async (req, res) => {
     } else {
       const putResult = await db.addPlanFromReq(req.body);
       await elastic.deleteNested(req.params.planId, "plan");
-      await elastic.index(req.body, req.params.planId, "plan");
+      await elastic.index(req.body, req.params.planId, null, "plan");
       res
         .setHeader("ETag", putResult.ETag)
         .status(201)
@@ -168,7 +168,7 @@ router.put("/:planId", async (req, res) => {
     } else {
       const patchResult = await db.addPlanFromReq(req.body);
       await elastic.deleteNested(req.params.planId, "plan");
-      await elastic.index(req.body, req.params.planId, "plan");
+      await elastic.index(req.body, req.params.planId, null, "plan");
       res
         .setHeader("ETag", patchResult.ETag)
         .status(201)

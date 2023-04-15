@@ -10,7 +10,7 @@ elastic.client = new elasticsearch.Client({
 
 const indexName = "my-index";
 
-elastic.index = async function (body, parentId, objKey) {
+elastic.index = async function (body, parentId, parentType, objKey) {
   let item = {};
   let objectId = body["objectId"];
   let objectType = body["objectType"];
@@ -18,11 +18,11 @@ elastic.index = async function (body, parentId, objKey) {
     let value = body[key];
     if (typeof value == "object" && value instanceof Array) {
       for (let i = 0; i < value.length; i++) {
-        console.log(value[i], objectId, objectType);
+        // console.log(value[i], objectId, objectType);
         await this.index(value[i], objectId, objectType, key);
       }
     } else if (typeof value == "object") {
-      console.log(value, objectId, objectType);
+      // console.log(value, objectId, objectType);
       await this.index(value, objectId, objectType, key);
     } else {
       item[key] = value;
